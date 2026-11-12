@@ -3,13 +3,11 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
 
 try {
-    // SQLite автоматически создаст файл database.sqlite в этой же папке
-    $pdo = new PDO("sqlite:" . __DIR__ . "/database.sqlite", null, null, [
+    $pdo = new PDO("sqlite:" . DIR . "/database.sqlite", null, null, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
     ]);
     
-    // Автоматически создаем таблицы при первом запуске
     $pdo->exec("CREATE TABLE IF NOT EXISTS countries (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -24,7 +22,6 @@ try {
         FOREIGN KEY (country_id) REFERENCES countries(id) ON DELETE CASCADE
     )");
 
-    // Заполняем тестовыми данными, если таблица пуста
     $check = $pdo->query("SELECT COUNT(*) FROM countries")->fetchColumn();
     if ($check == 0) {
         $pdo->exec("INSERT INTO countries (name, slug, capital) VALUES ('Ukraine', 'ukraine', 'Kyiv'), ('Poland', 'poland', 'Warsaw')");
